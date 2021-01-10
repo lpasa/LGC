@@ -1,9 +1,8 @@
 import sys
 import os
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '../../../'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '../../'))
 import torch
-from torch.nn import Softmax
 from dataReader.dataReader import DGLDatasetReader
 from model.network_std import GCNetwork
 from conv.hLGConv import hLGConv
