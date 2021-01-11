@@ -23,13 +23,13 @@ if __name__ == '__main__':
 
     # test hyper par
     dropout_list = [0.0, 0.2, 0.5]
-    lr_list = [0.2, 0.05, 0.001]
+    lr_list = [0.2, 0.02, 0.001]
     weight_decay_list = [5e-3, 5e-4, 5e-6]
     k_list = [2, 5, 10, 20, 50]
     criterion = torch.nn.CrossEntropyLoss()
 
     # Dataset
-    dataset_name = 'cora'
+    dataset_name = 'citeseer'
     self_loops = False
 
     for lr in lr_list:

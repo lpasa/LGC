@@ -5,20 +5,22 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../../'))
 import torch
 from dataReader.dataReader import DGLDatasetReader
 from model.network_std import GCNetwork
-from conv.EGConv import EGConv
+from conv.hLGConv import hLGConv
+
 from impl.nodeClassificationImpl import modelImplementation_nodeClassificator
 from utils.utils_method import printParOnFile
 
 if __name__ == '__main__':
 
-    test_type='EGC'
+    test_type='hLGC'
 
     # sis setting
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     run_list = range(5)
     n_epochs=500
     test_epoch=1
-    early_stopping_patience=200
+    early_stopping_patience=100
+
 
 
     # test hyper par
@@ -29,8 +31,8 @@ if __name__ == '__main__':
     criterion = torch.nn.CrossEntropyLoss()
 
     # Dataset
-    dataset_name = 'cora'
-    self_loops = False
+    dataset_name = 'pubmed'
+    self_loops = True
 
     for lr in lr_list:
         for dropout in dropout_list:
@@ -46,15 +48,13 @@ if __name__ == '__main__':
                                     "_weight-decay-" + str(weight_decay) +\
                                     "_k-" + str(k)
 
-
-                        test_type_folder = os.path.join("./test_log/", test_type)
+                        test_type_folder=os.path.join("./test_log/",test_type)
                         if not os.path.exists(test_type_folder):
                             os.makedirs(test_type_folder)
                         training_log_dir = os.path.join(test_type_folder, test_name)
                         print(test_name)
                         if not os.path.exists(training_log_dir):
                             os.makedirs(training_log_dir)
-
 
                             printParOnFile(test_name=test_name, log_dir=training_log_dir, par_list={"dataset_name": dataset_name,
                                                                                                     "learning_rate": lr,
@@ -72,7 +72,7 @@ if __name__ == '__main__':
                                               n_classes=n_classes,
                                               dropout=dropout,
                                               k=k,
-                                              convLayer=EGConv,
+                                              convLayer=hLGConv,
                                               device=device).to(device)
 
                             model_impl = modelImplementation_nodeClassificator(model=model,

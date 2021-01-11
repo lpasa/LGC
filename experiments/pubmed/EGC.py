@@ -29,7 +29,7 @@ if __name__ == '__main__':
     criterion = torch.nn.CrossEntropyLoss()
 
     # Dataset
-    dataset_name = 'cora'
+    dataset_name = 'pubmed'
     self_loops = False
 
     for lr in lr_list:

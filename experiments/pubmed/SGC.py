@@ -5,20 +5,20 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../../'))
 import torch
 from dataReader.dataReader import DGLDatasetReader
 from model.network_std import GCNetwork
-from conv.EGConv import EGConv
+from dgl.nn import SGConv
 from impl.nodeClassificationImpl import modelImplementation_nodeClassificator
 from utils.utils_method import printParOnFile
 
 if __name__ == '__main__':
 
-    test_type='EGC'
+    test_type = 'SGC'
 
     # sis setting
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     run_list = range(5)
-    n_epochs=500
+    n_epochs = 500
     test_epoch=1
-    early_stopping_patience=200
+    early_stopping_patience=100
 
 
     # test hyper par
@@ -29,23 +29,22 @@ if __name__ == '__main__':
     criterion = torch.nn.CrossEntropyLoss()
 
     # Dataset
-    dataset_name = 'cora'
-    self_loops = False
+    dataset_name = 'pubmed'
+    self_loops = True
 
     for lr in lr_list:
         for dropout in dropout_list:
             for weight_decay in weight_decay_list:
                 for k in k_list:
                     for run in run_list:
-                        test_name = "run_" + str(run) +'_'+ test_type
-                        #Env
-                        test_name = test_name +\
-                                    "_data-" + dataset_name +\
-                                    "_lr-" + str(lr) +\
-                                    "_dropout-" + str(dropout) +\
-                                    "_weight-decay-" + str(weight_decay) +\
+                        test_name = "run_" + str(run) + '_' + test_type
+                        # Env
+                        test_name = test_name + \
+                                    "_data-" + dataset_name + \
+                                    "_lr-" + str(lr) + \
+                                    "_dropout-" + str(dropout) + \
+                                    "_weight-decay-" + str(weight_decay) + \
                                     "_k-" + str(k)
-
 
                         test_type_folder = os.path.join("./test_log/", test_type)
                         if not os.path.exists(test_type_folder):
@@ -55,7 +54,6 @@ if __name__ == '__main__':
                         if not os.path.exists(training_log_dir):
                             os.makedirs(training_log_dir)
 
-
                             printParOnFile(test_name=test_name, log_dir=training_log_dir, par_list={"dataset_name": dataset_name,
                                                                                                     "learning_rate": lr,
                                                                                                     "dropout": dropout,
@@ -64,16 +62,18 @@ if __name__ == '__main__':
                                                                                                     "test_epoch": test_epoch,
                                                                                                     "self_loops": self_loops})
 
-                            graph, features, labels, n_classes, train_mask, test_mask, valid_mask = DGLDatasetReader(dataset_name, self_loops, device)
+                            g, features, labels, n_classes, train_mask, test_mask, valid_mask = DGLDatasetReader(dataset_name, self_loops, device)
 
 
-                            model = GCNetwork(g=graph,
+
+                            model = GCNetwork(g=g,
                                               in_feats=features.shape[1],
                                               n_classes=n_classes,
                                               dropout=dropout,
                                               k=k,
-                                              convLayer=EGConv,
+                                              convLayer=SGConv,
                                               device=device).to(device)
+
 
                             model_impl = modelImplementation_nodeClassificator(model=model,
                                                                                criterion=criterion,
