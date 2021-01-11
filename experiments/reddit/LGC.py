@@ -12,7 +12,7 @@ from utils.utils_method import printParOnFile,normalize
 
 if __name__ == '__main__':
 
-    test_type = 'SGC'
+    test_type = 'LGC'
 
     # sis setting
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
