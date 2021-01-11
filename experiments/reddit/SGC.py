@@ -69,6 +69,7 @@ if __name__ == '__main__':
                                           in_feats=features.shape[1],
                                           n_classes=n_classes,
                                           dropout=dropout,
+                                          k=k,
                                           convLayer=SGConv,
                                           device=device,
                                           norm=normalize,

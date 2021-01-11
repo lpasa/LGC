@@ -70,6 +70,7 @@ if __name__ == '__main__':
                                           n_classes=n_classes,
                                           dropout=dropout,
                                           convLayer=LGConv,
+                                          k=k,
                                           device=device,
                                           norm=normalize,
                                           bias=True).to(device)
